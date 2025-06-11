@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Admit Card</title>
+    <style>
+        @page { 
+            size: A5; 
+            margin: 1cm; 
+        }
+        body { 
+            font-family: Arial, sans-serif; 
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .admit-card {
+            border: 3px solid #000;
+            padding: 0;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-bottom: 2px solid #000;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        .header h3 {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            font-weight: normal;
+            color: #666;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .admit-info {
+            margin: 15px 0;
+        }
+        .admit-info table {
+            width: 100%;
+            border: none;
+        }
+        .admit-info td {
+            border: none;
+            padding: 5px 0;
+        }
+        .student-section {
+            display: flex;
+            margin: 20px 0;
+            gap: 20px;
+        }
+        .student-details {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+        .student-details p {
+            margin: 8px 0;
+            border-bottom: 1px dotted #ccc;
+            padding-bottom: 5px;
+        }
+        .photo-section {
+            width: 120px;
+            height: 150px;
+            border: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+            font-size: 10px;
+            text-align: center;
+            color: #666;
+        }
+        .exam-section {
+            margin: 20px 0;
+            background-color: #fff8dc;
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+        h3 {
+            background-color: #e0e0e0;
+            padding: 8px;
+            margin: 20px 0 10px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 10px 0; 
+        }
+        th, td { 
+            border: 1px solid #000; 
+            padding: 8px; 
+            text-align: left; 
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .instructions {
+            margin: 20px 0;
+            background-color: #ffe6e6;
+            padding: 15px;
+            border: 1px solid #d00;
+        }
+        .instructions h4 {
+            margin-top: 0;
+            color: #d00;
+        }
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 5px 0;
+        }
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+        }
+        .signature-box {
+            text-align: center;
+            width: 45%;
+        }
+        .signature-line {
+            border-bottom: 1px solid #000;
+            margin-bottom: 5px;
+            height: 40px;
+        }
+        .footer { 
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+            border-top: 1px solid #000;
+            margin-top: 20px;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admit-card">
+        <div class="header">
+            <h2>EXAMINATION ADMIT CARD</h2>
+            <h3>Academic Session {{ student.date_enrolled|date:"Y" }}</h3>
+            <div class="admit-info">
+                <table>
+                    <tr>
+                        <td>
+                            <strong>Admit Card No:</strong> AC-{{ student.student_id }}-{{ student.date_enrolled|date:"Y" }}
+                        </td>
+                        <td style="text-align: right;">
+                            <strong>Issue Date:</strong> {% now "d/m/Y" %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="student-section">
+                <div class="student-details">
+                    <p><strong>STUDENT NAME:</strong> {{ student.name|upper }}</p>
+                    <p><strong>STUDENT ID:</strong> {{ student.student_id }}</p>
+                    <p><strong>REGISTRATION NO:</strong> {{ student.registration_no }}</p>
+                    <p><strong>ROLL NUMBER:</strong> {{ student.roll_number|default:"-" }}</p>
+                    <p><strong>CLASS:</strong> {{ student.classroom }}</p>
+                    {% if student.date_enrolled %}
+                    <p><strong>DATE OF ENROLLMENT:</strong> {{ student.date_enrolled|date:"d/m/Y" }}</p>
+                    {% endif %}
+                    <p><strong>EXAM CENTER:</strong> School</p>
+                </div>
+            </div>
+
+            <div class="exam-section">
+                <h4 style="margin-top: 0; text-align: center; color: #000;">EXAMINATION DETAILS</h4>
+                <table style="border: none;">
+                    <tr style="border: none;">
+                        <td style="border: none; width: 50%;"><strong>Examination Type:</strong> Final Examination</td>
+                        <td style="border: none;"><strong>Duration:</strong> 3 Hours per paper</td>
+                    </tr>
+                    <tr style="border: none;">
+                        <td style="border: none;"><strong>Reporting Time:</strong> 30 minutes before exam</td>
+                        <td style="border: none;"><strong>Exam Mode:</strong> Written</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>EXAMINATION SCHEDULE</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Date</th>
+                        <th style="width: 15%;">Time</th>
+                        <th style="width: 40%;">Subject</th>
+                        <th style="width: 15%;">Subject Code</th>
+                        <th style="width: 15%;">Hall No.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sample exam schedule - you can make this dynamic based on your needs -->
+                    <tr>
+                        <td>TBD</td>
+                        <td>10:00 AM</td>
+                        <td>Mathematics</td>
+                        <td>MTH-101</td>
+                        <td>A-101</td>
+                    </tr>
+                    <tr>
+                        <td>TBD</td>
+                        <td>10:00 AM</td>
+                        <td>English</td>
+                        <td>ENG-101</td>
+                        <td>A-102</td>
+                    </tr>
+                    <tr>
+                        <td>TBD</td>
+                        <td>10:00 AM</td>
+                        <td>Science</td>
+                        <td>SCI-101</td>
+                        <td>A-103</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: center; font-style: italic; color: #666;">
+                            Detailed examination schedule will be announced separately
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="instructions">
+                <h4>IMPORTANT INSTRUCTIONS:</h4>
+                <ul>
+                    <li>Students must bring this admit card to the examination hall</li>
+                    <li>Students must arrive at least 30 minutes before the examination time</li>
+                    <li>Students arriving more than 30 minutes late will not be allowed to enter</li>
+                    <li>Any form of cheating or malpractice will result in disqualification</li>
+                    <li>Follow all examination rules and regulations</li>
+                    <li>Contact examination office for any queries</li>
+                </ul>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Student Signature</strong></p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p><strong>Controller of Examinations</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><em>This admit card is valid only for the examination session mentioned above.</em></p>
+            <p><em>Please preserve this card until results are published.</em></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Fee Card</title>
+    <style>
+        @page { 
+            size: A5; 
+            margin: 0.8cm; 
+        }
+        body { 
+            font-family: Arial, sans-serif; 
+            font-size: 10px;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+            color: #000;
+        }
+        
+        /* School Header */
+        .school-header { 
+            text-align: center; 
+            border: 2px solid #000;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .school-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0 0 3px 0;
+            text-transform: uppercase;
+        }
+        .school-address {
+            font-size: 9px;
+            margin: 3px 0;
+        }
+        .fee-card-title {
+            border: 1px solid #000;
+            padding: 5px;
+            margin: 8px 0 0 0;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #f0f0f0;
+        }
+        
+        /* Basic Info */
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #000;
+            padding: 8px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+            font-size: 9px;
+        }
+        
+        /* Student Info */
+        .student-info {
+            border: 1px solid #000;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .student-info table {
+            width: 100%;
+            border: none;
+        }
+        .student-info td {
+            border: none;
+            padding: 3px 0;
+            vertical-align: top;
+            font-size: 9px;
+        }
+        .student-info td:first-child {
+            font-weight: bold;
+            width: 35%;
+        }
+        
+        /* Fee Table */
+        .fee-title {
+            background-color: #000;
+            color: white;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            margin: 15px 0 0 0;
+            font-size: 11px;
+        }
+        .fee-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            border: 2px solid #000;
+            margin: 0 0 15px 0;
+        }
+        .fee-table th { 
+            background-color: #e0e0e0;
+            border: 1px solid #000; 
+            padding: 6px 4px; 
+            text-align: center;
+            font-weight: bold;
+            font-size: 9px;
+        }
+        .fee-table td { 
+            border: 1px solid #000; 
+            padding: 5px 4px; 
+            text-align: left; 
+            font-size: 9px;
+        }
+        .sn-col {
+            text-align: center;
+            width: 12%;
+        }
+        .fee-col {
+            width: 58%;
+        }
+        .amount-col { 
+            text-align: right; 
+            font-weight: bold;
+            width: 30%;
+        }
+        
+        /* Summary */
+        .summary {
+            border: 2px solid #000;
+            margin: 15px 0;
+        }
+        .summary table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .summary td {
+            padding: 5px;
+            border-bottom: 1px solid #000;
+            font-size: 9px;
+        }
+        .summary td:first-child {
+            font-weight: bold;
+            width: 60%;
+        }
+        .summary td:last-child {
+            text-align: right;
+            font-weight: bold;
+        }
+        .total-row {
+            background-color: #e0e0e0;
+            font-size: 11px;
+        }
+        
+        /* Payment Info */
+        .payment-info {
+            border: 1px solid #000;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .payment-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-decoration: underline;
+            font-size: 10px;
+        }
+        .payment-info p {
+            margin: 3px 0;
+            font-size: 9px;
+        }
+        .deadline {
+            border: 2px solid #000;
+            padding: 6px;
+            margin: 8px 0;
+            text-align: center;
+            font-weight: bold;
+            background-color: #f0f0f0;
+            font-size: 9px;
+        }
+        
+        /* Notes */
+        .notes {
+            border: 1px solid #000;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .notes-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-decoration: underline;
+            font-size: 10px;
+        }
+        .notes ul {
+            margin: 0;
+            padding-left: 15px;
+        }
+        .notes li {
+            margin: 3px 0;
+            font-size: 8px;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+        }
+        .footer-left {
+            font-size: 8px;
+        }
+        .signature {
+            text-align: center;
+        }
+        .signature-line {
+            border-bottom: 1px solid #000;
+            width: 80px;
+            margin-bottom: 3px;
+        }
+        .signature p {
+            font-size: 8px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- School Header -->
+    <div class="school-header">
+        <h1 class="school-name">{{ school_name|default:"Mohit Secondary School" }}</h1>
+        <div class="school-address">
+            {{ school_address|default:"Gaupalika-5, District, Nepal" }}<br>
+            Phone: {{ school_phone|default:"981-xxxxxxx" }}
+        </div>
+        <div class="fee-card-title">FEE CARD</div>
+    </div>
+
+    <!-- Card Info -->
+    <div class="card-info">
+        <div>
+            <strong>Academic Year:</strong> {{ academic_year|default:"2081-82" }}
+        </div>
+        <div>
+            <strong>Issue Date:</strong> {{ bill.date_generated|date:"Y/m/d" }}
+        </div>
+        <div>
+            <strong>Card No.:</strong> FC-{{ bill.bill_number }}
+        </div>
+    </div>
+
+    <!-- Student Information -->
+    <div class="student-info">
+        <table>
+            <tr>
+                <td>Student Name:</td>
+                <td><strong>{{ student.name }}</strong></td>
+            </tr>
+            <tr>
+                <td>Class:</td>
+                <td><strong>{{ student.classroom }}</strong></td>
+            </tr>
+            <tr>
+                <td>Roll No.:</td>
+                <td><strong>{{ student.roll_number|default:"-" }}</strong></td>
+            </tr>
+            <tr>
+                <td>Student ID:</td>
+                <td><strong>{{ student.student_id }}</strong></td>
+            </tr>
+            <tr>
+                <td>Registration No.:</td>
+                <td><strong>{{ student.registration_no }}</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Fee Structure -->
+    <div class="fee-title">ACADEMIC FEE DETAILS</div>
+    <table class="fee-table">
+        <thead>
+            <tr>
+                <th class="sn-col">S.N.</th>
+                <th class="fee-col">Fee Heading</th>
+                <th class="amount-col">Amount (Rs.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td class="sn-col">{{ forloop.counter }}</td>
+                <td>{{ item.fee_heading }}</td>
+                <td class="amount-col">{{ item.amount|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Fee Summary -->
+    <div class="summary">
+        <table>
+            <tr>
+                <td>Total Fee</td>
+                <td>Rs. {{ bill.total_amount|floatformat:2 }}</td>
+            </tr>
+            <tr>
+                <td>Paid Amount</td>
+                <td>Rs. {{ bill.paid_amount|floatformat:2 }}</td>
+            </tr>
+            <tr class="total-row">
+                <td><strong>Due Amount</strong></td>
+                <td><strong>Rs. {{ bill.due_amount|floatformat:2 }}</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Payment Instructions -->
+    <div class="payment-info">
+        <div class="payment-title">PAYMENT INSTRUCTIONS</div>
+        <p><strong>Payment Location:</strong> School Office</p>
+        <p><strong>Office Hours:</strong> Sunday - Friday, 10:00 AM - 4:00 PM</p>
+        <div class="deadline">
+            Payment Deadline: {{ payment_deadline|default:"2081/04/15" }}
+        </div>
+    </div>
+
+    <!-- Important Notes -->
+    <div class="notes">
+        <div class="notes-title">IMPORTANT NOTES</div>
+        <ul>
+            <li>Fee must be paid within the specified date.</li>
+            <li>Late payment will incur penalty charges.</li>
+            <li>Receipt must be kept after payment.</li>
+            <li>Fee once paid is non-refundable.</li>
+        </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-left">
+            <p>This is a computer generated fee card.</p>
+            <p>Issued by: Administration Office</p>
+        </div>
+        <div class="signature">
+            <div class="signature-line"></div>
+            <p><strong>Principal</strong></p>
+        </div>
+    </div>
+</body>
+</html>
