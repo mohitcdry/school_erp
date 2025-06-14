@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class SimpleLoginSerializer(serializers.Serializer):
-    username_or_email = serializers.EmailField()
+    username_or_email = serializers.CharField()
     password = serializers.CharField()
 
 # class TokenResponseSerializer(serializers.Serializer):

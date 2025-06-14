@@ -13,7 +13,7 @@
 
 from rest_framework import status, generics
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
@@ -27,50 +27,89 @@ from .serializers import UserSerializer, SimpleLoginSerializer
 @csrf_exempt
 def simple_login(request):
     """Simple login with username/email and password"""
+
+    print("=== DEBUG LOGIN ===")
+    print(f"Request data: {request.data}")
+    print(f"Request content type: {request.content_type}")
+
     serializer = SimpleLoginSerializer(data=request.data)
     if serializer.is_valid():
         username_or_email = serializer.validated_data["username_or_email"]
         password = serializer.validated_data["password"]
+        print(f"Input - Username/Email: {username_or_email}")
+        print(f"Input - Password: {password}")
 
         # Try to find user by username first, then email
-        user = None
+        authenticated_user = None
         try:
             if '@' in username_or_email:
-                # It's an email
-                user = User.objects.get(email=username_or_email)
-                user = authenticate(request, username=user.username, password=password)
+                # It's an email - finds user by email
+                print("Trying to find user by email...")
+                user_obj = User.objects.get(email=username_or_email)
+                print(f"Found user: {user_obj.username}")
+                print(f"User is active: {user_obj.is_active}")
+                print(f"Password check: {user_obj.check_password(password)}")
+
+                authenticated_user = authenticate(request, username=username_or_email, password=password)
+                print(f"Authenticate result: {authenticated_user}")
+        
             else:
                 # It's a username
-                user = authenticate(request, username=username_or_email, password=password)
-        except User.DoesNotExist:
-            pass
+                print("Trying to find user by username...")
+                user_obj = authenticate(request, username=username_or_email, password=password)
+                print(f"Found user: {user_obj.username}")
+                print(f"User is active: {user_obj.is_active}")
+                print(f"Password check: {user_obj.check_password(password)}")
 
-        if user and user.is_active:
-            login(request, user)  # ✅ Use Django session login
-            return Response(
-                {
+                authenticated_user = authenticate(request, username=username_or_email, password=password)
+                print(f"Authenticate result: {authenticated_user}")
+                
+        except User.DoesNotExist:
+            print("User does not exist")
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if authenticated_user and authenticated_user.is_active:
+            login(request, authenticated_user)  
+            return Response({
                     "message": "Login successful",
-                    "user": UserSerializer(user).data,
-                },
-                status=status.HTTP_200_OK,
-            )
+                    "user":{
+                    # UserSerializer(user).data,
+                    "id": authenticated_user.id,
+                    "username": authenticated_user.username,
+                    "email": authenticated_user.email,
+                    "role": authenticated_user.role,
+                    "first_name": authenticated_user.first_name,
+                    "last_name": authenticated_user.last_name,
+                }      
+            })
         else:
+            print("Authentication failed or user inactive")
             return Response(
                 {"error": "Invalid credentials or account disabled"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
+    else:
+        print(f"Serializer errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_current_user(request):
+    """Get current authenticated user"""
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
+
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
+@csrf_exempt 
 def simple_logout(request):
     """Simple logout using Django session"""
-    logout(request)  
-    return Response(
-        {"message": "Logout successful"}, 
-        status=status.HTTP_200_OK
-    )
-
+    if request.user.is_authenticated:
+        logout(request)
+        return Response({"message": "Logged out successfully"})
+    else:
+        return Response({"message": "Already logged out"})
 class UserListCreateView(generics.ListCreateAPIView):
     """List all users or create a new user (Admin only)"""
     queryset = User.objects.all()

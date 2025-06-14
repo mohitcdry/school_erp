@@ -26,12 +26,14 @@ from django.urls import path
 from .views import (
     simple_login,
     simple_logout,
+    get_current_user,
     UserListCreateView,
 )
 
 urlpatterns = [
     path("login/", simple_login, name="simple_login"),
     path("logout/", simple_logout, name="simple_logout"),
+    path("user/", get_current_user, name="current_user"),
     
     # Keep user management for admin
     path("users/", UserListCreateView.as_view(), name="user_list_create"),
